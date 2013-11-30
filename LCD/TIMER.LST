@@ -1,0 +1,740 @@
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE    1
+
+
+DOS 5.0 (038-N) 8086/87/88/186 MACRO ASSEMBLER V3.1 ASSEMBLY OF MODULE TIMER
+OBJECT MODULE PLACED IN TIMER.OBJ
+ASSEMBLER INVOKED BY:  F:\ASM86.EXE TIMER.ASM
+
+
+LOC  OBJ                  LINE     SOURCE
+
+                             1 +1  $MOD186
+                             2 +1  $EP
+                             3     NAME TIMER
+                             4     
+                             5     ; =========================================================================
+                             6     ; Main Timer Driver Program
+                             7     ; Author: Vaghul Aditya Balaji
+                             8     
+                             9     ; This file contains proprietary information and cannot be copied 
+                            10     ; or distributed without prior permission from the author.
+                            11     ; =========================================================================
+                            12     
+                            13     public  serial_rec_action, timer2_action
+                            14     extrn   print_char:far, print_2hex:far, iodefine:far
+                            15     extrn   set_timer2:far, disable_timer2:far
+                            16     
+                            17     
+                            18     ;IO Setup for 80C188 
+  FFA0                      19             UMCR             EQU    0FFA0H ; Upper Memory Control Register
+  FFA2                      20             LMCR             EQU    0FFA2H ; Lower Memory control Register         
+  FFA4                      21             PCSBA        EQU    0FFA4H ; Peripheral Chip Select Base Address
+  FFA8                      22             MPCS         EQU    0FFA8H ; MMCS and PCS Alter Control Register
+  FF38                      23             INT0CON      EQU    0FF38H
+  FF22                      24             EOI          EQU    0FF22H
+  FF28                      25             IMASK        EQU    0FF28H      
+  0080                      26             PORTA        EQU    0080H
+  0081                      27             PORTB        EQU    0081H
+  0082                      28             PORTC        EQU    0082H
+  0083                      29             CWR          EQU    0083H
+  0064                      30             TIMER2_LEN       EQU    100
+  0010                      31             LINE1_LIMIT  EQU    16
+  0028                      32             LINE2_LIMIT  EQU    40
+  000A                      33             ROLL_LIMIT   EQU    10
+                            34     
+                            35             
+----                        36     STACK_SEG       SEGMENT
+0000 (256                   37             DB      256 DUP(?)
+     ??
+     )
+0100                        38             TOS     LABEL   WORD
+----                        39     STACK_SEG       ENDS
+                            40     
+                            41     
+----                        42     DATA_SEG        SEGMENT
+0000 0A                     43             TIMER2_MESS       DB  10,13,'TIMER2 INTERRUPT    '
+0001 0D
+0002 54494D45523220
+     494E5445525255
+     505420202020
+0016 2F                     44             T_COUNT           DB  2FH
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE    2
+
+
+LOC  OBJ                  LINE     SOURCE
+
+0017 2F                     45             T_COUNT_SET       DB  2FH
+0018 0A                     46             REC_MESS          DB  10,13,'Period of timer =     '
+0019 0D
+001A 506572696F6420
+     6F662074696D65
+     72203D20202020
+     20
+                            47             
+                            48             ;LCD Variables
+0030 (16                    49             DISP_LINE1    DB  LINE1_LIMIT DUP(' ')
+     20
+     )
+0040 (16                    50             DISP_LINE2    DB  LINE1_LIMIT DUP(' ')
+     20
+     )
+0050 (16                    51                                       DB  LINE1_LIMIT DUP(' ')
+     20
+     )
+0060 (16                    52                                       DB  LINE1_LIMIT DUP(' ')
+     20
+     )
+0070 00                     53             LINE1_COUNT   DB  00H
+0071 00                     54             LINE2_COUNT   DB  00H
+0072 0000                   55             TIMER2_COUNT  DW  0000H
+0074 00                     56             ROLL_COUNT    DB  00H
+                            57             
+                            58             ;Serial Variables
+0075 00                     59             RECEIVE_FLAG  DB  00H
+0076 00                     60             LINE2_FLAG    DB  00H
+0077 4C333030325D           61             LCD_ID        DB  'L3002]'
+007D 00                     62             LCD_START     DB  00H
+007E 00                     63             LCD_FLAG          DB  00H
+007F 00                     64             START_READ    DB  00H
+----                        65     DATA_SEG        ENDS
+                            66     
+                            67     
+----                        68     CODE_SEG        SEGMENT
+                            69     
+                            70             PUBLIC          START
+                            71     
+                            72     ASSUME  CS:CODE_SEG, SS:STACK_SEG, DS:DATA_SEG
+                            73     
+0000                        74     START:
+                            75     ;initialize stack area
+0000 B8----         R       76             MOV     AX,STACK_SEG            
+0003 8ED0                   77             MOV     SS,AX
+0005 368B260001             78             MOV     SP,TOS
+                            79             
+000A B8----         R       80             MOV AX, DATA_SEG
+000D 8ED8                   81             MOV DS, AX
+                            82     
+                            83     ; Initialize the on-chip peripherals
+000F 9A0000----     E       84             CALL FAR PTR IODEFINE
+                            85                     
+                            86     ; Initialize MPCS to MAP peripheral to IO address       
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE    3
+
+
+LOC  OBJ                  LINE     SOURCE
+
+0014 BAA8FF                 87             MOV DX, MPCS
+0017 B88300                 88             MOV AX, 0083H
+001A EF                     89             OUT DX, AX
+                            90     
+                            91     ; PCSBA initial, set the parallel port start from 00H
+001B BAA4FF                 92             MOV DX, PCSBA
+001E B80300                 93             MOV AX, 0003H ; Peripheral starting address 00H no READY, No Waits
+0021 EF                     94             OUT DX, AX
+                            95     
+                            96     ; Initialize LMCS 
+0022 BAA2FF                 97         MOV DX, LMCR
+0025 B8C401                 98         MOV AX, 01C4H  ; Starting address 1FFFH, 8K, No waits, last should be 5H for 1 wa
+                                   its      
+0028 EF                     99         OUT DX, AX
+                           100     
+                           101     ; ######################### Start of User Main Routine ###########################
+                           102             
+0029 FB                    103         STI
+                           104             
+002A BA8300                105             MOV DX, CWR
+002D B88000                106             MOV AX, 80H
+0030 EE                    107             OUT DX, AL
+                           108             
+0031                       109     NEXT:
+0031 EBFE                  110             JMP NEXT
+                           111             
+                           112     ; ######################### End of User Main Routine #############################
+                           113     
+                           114     
+                           115     ;Procedure for initializing the LCD system and setting it up for display
+0033                       116     LCD_INITIALIZE PROC FAR
+0033 50                    117             PUSH AX
+0034 51                    118             PUSH CX
+0035 52                    119             PUSH DX
+                           120     
+                           121     ; ****Time Delay of 60ms****    
+0036 33C9                  122             XOR CX, CX
+0038 B93075                123             MOV CX, 30000   
+                           124     
+003B                       125     DELAY_60ms:
+003B E2FE                  126             LOOP DELAY_60ms
+                           127             
+003D 33C9                  128             XOR CX, CX
+                           129     
+                           130     ; *****Function Set****
+003F 33C0                  131             XOR AX, AX
+0041 BA8200                132             MOV DX, PORTC
+0044 B008                  133             MOV AL, 08H
+0046 EE                    134             OUT DX, AL
+                           135     
+0047 33C0                  136             XOR AX, AX
+0049 BA8100                137             MOV DX, PORTB
+004C B03C                  138             MOV AL, 3CH
+004E EE                    139             OUT DX, AL
+                           140     
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE    4
+
+
+LOC  OBJ                  LINE     SOURCE
+
+004F 33C0                  141             XOR AX, AX
+0051 BA8200                142             MOV DX, PORTC
+0054 B000                  143             MOV AL, 00H
+0056 EE                    144             OUT DX, AL
+                           145     ; **********************
+                           146     
+                           147     ; ****Time Delay of 5ms****     
+0057 33C9                  148             XOR CX, CX
+0059 B9C409                149             MOV CX, 2500
+                           150     
+005C                       151     DELAY_5ms:
+005C E2FE                  152             LOOP DELAY_5ms
+                           153             
+005E 33C9                  154             XOR CX, CX      
+                           155     
+                           156     ; *****Function Set****
+0060 33C0                  157             XOR AX, AX
+0062 BA8200                158             MOV DX, PORTC
+0065 B008                  159             MOV AL, 08H
+0067 EE                    160             OUT DX, AL
+                           161     
+0068 33C0                  162             XOR AX, AX
+006A BA8100                163             MOV DX, PORTB
+006D B03C                  164             MOV AL, 3CH
+006F EE                    165             OUT DX, AL
+                           166     
+0070 33C0                  167             XOR AX, AX
+0072 BA8200                168             MOV DX, PORTC
+0075 B000                  169             MOV AL, 00H
+0077 EE                    170             OUT DX, AL
+                           171     ; **********************
+                           172     
+                           173     ; ****Time Delay of 100us****   
+0078 33C9                  174             XOR CX, CX
+007A B93200                175             MOV CX, 50
+                           176     
+007D                       177     DELAY_100us:
+007D E2FE                  178             LOOP DELAY_100us
+                           179             
+007F 33C9                  180             XOR CX, CX
+                           181     
+                           182     ; *****Function Set****
+0081 33C0                  183             XOR AX, AX
+0083 BA8200                184             MOV DX, PORTC
+0086 B008                  185             MOV AL, 08H
+0088 EE                    186             OUT DX, AL
+                           187     
+0089 33C0                  188             XOR AX, AX
+008B BA8100                189             MOV DX, PORTB
+008E B03C                  190             MOV AL, 3CH
+0090 EE                    191             OUT DX, AL
+                           192     
+0091 33C0                  193             XOR AX, AX
+0093 BA8200                194             MOV DX, PORTC
+0096 B000                  195             MOV AL, 00H
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE    5
+
+
+LOC  OBJ                  LINE     SOURCE
+
+0098 EE                    196             OUT DX, AL
+                           197     ; **********************
+                           198     
+                           199     ; *****Function Set****
+0099 33C0                  200             XOR AX, AX
+009B BA8200                201             MOV DX, PORTC
+009E B008                  202             MOV AL, 08H
+00A0 EE                    203             OUT DX, AL
+                           204     
+00A1 33C0                  205             XOR AX, AX
+00A3 BA8100                206             MOV DX, PORTB
+00A6 B03C                  207             MOV AL, 3CH
+00A8 EE                    208             OUT DX, AL
+                           209     
+00A9 33C0                  210             XOR AX, AX
+00AB BA8200                211             MOV DX, PORTC
+00AE B000                  212             MOV AL, 00H
+00B0 EE                    213             OUT DX, AL
+                           214     ; **********************
+                           215     
+00B1 E80401                216             CALL LCD_POLL
+                           217     
+                           218     ; *****Switching off Display****
+00B4 33C0                  219             XOR AX, AX
+00B6 BA8200                220             MOV DX, PORTC
+00B9 B008                  221             MOV AL, 08H
+00BB EE                    222             OUT DX, AL
+                           223     
+00BC 33C0                  224             XOR AX, AX
+00BE BA8100                225             MOV DX, PORTB
+00C1 B008                  226             MOV AL, 08H
+00C3 EE                    227             OUT DX, AL
+                           228     
+00C4 33C0                  229             XOR AX, AX
+00C6 BA8200                230             MOV DX, PORTC
+00C9 B000                  231             MOV AL, 00H
+00CB EE                    232             OUT DX, AL
+                           233     ; **********************
+                           234     
+00CC E8E900                235             CALL LCD_POLL
+                           236     
+                           237     ; *****Clear the LCD****
+00CF 33C0                  238             XOR AX, AX
+00D1 BA8200                239             MOV DX, PORTC
+00D4 B008                  240             MOV AL, 08H
+00D6 EE                    241             OUT DX, AL
+                           242     
+00D7 33C0                  243             XOR AX, AX
+00D9 BA8100                244             MOV DX, PORTB
+00DC B001                  245             MOV AL, 01H
+00DE EE                    246             OUT DX, AL
+                           247     
+00DF 33C0                  248             XOR AX, AX
+00E1 BA8200                249             MOV DX, PORTC
+00E4 B000                  250             MOV AL, 00H
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE    6
+
+
+LOC  OBJ                  LINE     SOURCE
+
+00E6 EE                    251             OUT DX, AL
+                           252     ; **********************
+                           253     
+00E7 E8CE00                254             CALL LCD_POLL
+                           255     
+                           256     ; *****Enable Entry Mode****
+00EA 33C0                  257             XOR AX, AX
+00EC BA8200                258             MOV DX, PORTC
+00EF B008                  259             MOV AL, 08H
+00F1 EE                    260             OUT DX, AL
+                           261     
+00F2 33C0                  262             XOR AX, AX
+00F4 BA8100                263             MOV DX, PORTB
+00F7 B006                  264             MOV AL, 06H
+00F9 EE                    265             OUT DX, AL
+                           266     
+00FA 33C0                  267             XOR AX, AX
+00FC BA8200                268             MOV DX, PORTC
+00FF B000                  269             MOV AL, 00H
+0101 EE                    270             OUT DX, AL
+                           271     ; **********************
+                           272     
+0102 E8B300                273             CALL LCD_POLL
+                           274     
+0105                       275     LCD_INIT_END:
+0105 5A                    276             POP DX
+0106 59                    277             POP CX
+0107 58                    278             POP AX
+0108 CB                    279             RET
+                           280     LCD_INITIALIZE ENDP
+                           281     
+                           282     
+                           283     ;Procedure for displaying characters on the LCD
+0109                       284     LCD_DISPLAY PROC FAR
+0109 50                    285             PUSH AX
+010A 53                    286             PUSH BX
+010B 51                    287             PUSH CX
+010C 52                    288             PUSH DX
+                           289     
+                           290     ; *****Set First Line****
+010D 33C0                  291             XOR AX, AX
+010F BA8200                292             MOV DX, PORTC
+0112 B008                  293             MOV AL, 08H
+0114 EE                    294             OUT DX, AL
+                           295     
+0115 33C0                  296             XOR AX, AX
+0117 BA8100                297             MOV DX, PORTB
+011A B080                  298             MOV AL, 80H
+011C EE                    299             OUT DX, AL
+                           300     
+011D 33C0                  301             XOR AX, AX
+011F BA8200                302             MOV DX, PORTC
+0122 B000                  303             MOV AL, 00H
+0124 EE                    304             OUT DX, AL
+                           305     ; **********************
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE    7
+
+
+LOC  OBJ                  LINE     SOURCE
+
+                           306     
+0125 E89000                307             CALL LCD_POLL
+                           308     
+                           309     ; *****Switching on Display****
+0128 33C0                  310             XOR AX, AX
+012A BA8200                311             MOV DX, PORTC
+012D B008                  312             MOV AL, 08H
+012F EE                    313             OUT DX, AL
+                           314     
+0130 33C0                  315             XOR AX, AX
+0132 BA8100                316             MOV DX, PORTB
+0135 B00C                  317             MOV AL, 0CH
+0137 EE                    318             OUT DX, AL
+                           319     
+0138 33C0                  320             XOR AX, AX
+013A BA8200                321             MOV DX, PORTC
+013D B000                  322             MOV AL, 00H
+013F EE                    323             OUT DX, AL
+                           324     ; **********************
+                           325     
+0140 E87500                326             CALL LCD_POLL
+                           327     
+0143 33C9                  328             XOR CX, CX
+0145 8A0E7000              329             MOV CL, DS:LINE1_COUNT
+0149 33DB                  330             XOR BX, BX
+                           331     
+                           332     ; **********To display Characters in first line************
+014B                       333     LINE1_LOOP:
+014B 33C0                  334             XOR AX, AX
+014D BA8200                335             MOV DX, PORTC
+0150 B00A                  336             MOV AL, 0AH
+0152 EE                    337             OUT DX, AL
+                           338     
+0153 33C0                  339             XOR AX, AX
+0155 BA8100                340             MOV DX, PORTB
+0158 8A4730                341             MOV AL, DS:DISP_LINE1[BX]
+015B EE                    342             OUT DX, AL
+                           343     
+015C 33C0                  344             XOR AX, AX
+015E BA8200                345             MOV DX, PORTC
+0161 B002                  346             MOV AL, 02H
+0163 EE                    347             OUT DX, AL
+                           348     
+0164 E85100                349             CALL LCD_POLL
+                           350             
+0167 43                    351             INC BX
+0168 E2E1                  352             LOOP LINE1_LOOP
+                           353     ; **********************************************************
+                           354     
+                           355     ; *****Set Second Line****
+016A 33C0                  356             XOR AX, AX
+016C BA8200                357             MOV DX, PORTC
+016F B008                  358             MOV AL, 08H
+0171 EE                    359             OUT DX, AL
+                           360     
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE    8
+
+
+LOC  OBJ                  LINE     SOURCE
+
+0172 33C0                  361             XOR AX, AX
+0174 BA8100                362             MOV DX, PORTB
+0177 B0C0                  363             MOV AL, 0C0H
+0179 EE                    364             OUT DX, AL
+                           365     
+017A 33C0                  366             XOR AX, AX
+017C BA8200                367             MOV DX, PORTC
+017F B000                  368             MOV AL, 00H
+0181 EE                    369             OUT DX, AL
+                           370     ; **********************
+                           371     
+0182 E83300                372             CALL LCD_POLL
+                           373     
+0185 33C9                  374             XOR CX, CX
+0187 33DB                  375             XOR BX, BX
+0189 8A0E7100              376             MOV CL, DS:LINE2_COUNT
+018D 80F910                377             CMP CL, LINE1_LIMIT
+0190 7E02                  378             JLE LINE2_LOOP
+0192 B110                  379             MOV CL, LINE1_LIMIT
+                           380     
+                           381     ; **********To display Characters in second line************
+0194                       382     LINE2_LOOP:
+0194 33C0                  383             XOR AX, AX
+0196 BA8200                384             MOV DX, PORTC
+0199 B00A                  385             MOV AL, 0AH
+019B EE                    386             OUT DX, AL
+                           387     
+019C 33C0                  388             XOR AX, AX
+019E BA8100                389             MOV DX, PORTB
+01A1 8A4740                390             MOV AL, DS:DISP_LINE2[BX]
+01A4 EE                    391             OUT DX, AL
+                           392     
+01A5 33C0                  393             XOR AX, AX
+01A7 BA8200                394             MOV DX, PORTC
+01AA B002                  395             MOV AL, 02H
+01AC EE                    396             OUT DX, AL
+                           397     
+01AD E80800                398             CALL LCD_POLL
+                           399             
+01B0 43                    400             INC BX
+01B1 E2E1                  401             LOOP LINE2_LOOP
+                           402     ; **********************************************************
+                           403     
+01B3                       404     LCD_DISP_END:
+01B3 5A                    405             POP DX
+01B4 59                    406             POP CX
+01B5 5B                    407             POP BX
+01B6 58                    408             POP AX
+01B7 CB                    409             RET
+                           410     LCD_DISPLAY ENDP
+                           411     
+                           412     
+                           413     ;Procedure for checking the busy flag on the LCD to make sure it is ready to receive 
+                                   input
+01B8                       414     LCD_POLL PROC NEAR
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE    9
+
+
+LOC  OBJ                  LINE     SOURCE
+
+01B8 50                    415             PUSH AX
+01B9 52                    416             PUSH DX
+                           417     
+01BA BA8300                418             MOV DX, CWR
+01BD B082                  419             MOV AL, 82H
+01BF EE                    420             OUT DX, AL
+                           421     
+01C0                       422     BUSY_POLL:      
+01C0 B00C                  423             MOV AL, 0CH
+01C2 BA8200                424             MOV DX, PORTC
+01C5 EE                    425             OUT DX, AL
+                           426                     
+01C6 BA8100                427             MOV DX, PORTB
+01C9 EC                    428             IN AL, DX               
+01CA 2480                  429             AND AL, 80H             
+01CC 8AE0                  430             MOV AH, AL
+                           431     
+01CE B004                  432             MOV AL, 04H
+01D0 BA8200                433             MOV DX, PORTC
+01D3 EE                    434             OUT DX, AL      
+                           435             
+01D4 80FC00                436             CMP AH, 00H     
+01D7 75E7                  437             JNZ BUSY_POLL
+                           438             
+01D9 BA8300                439             MOV DX, CWR
+01DC B080                  440             MOV AL, 80H
+01DE EE                    441             OUT DX, AL
+                           442     
+01DF                       443     LCD_POLL_END:   
+01DF 5A                    444             POP DX
+01E0 58                    445             POP AX
+01E1 C3                    446             RET
+                           447     LCD_POLL ENDP
+                           448     
+                           449     
+                           450     ;Procedure that is called when a character is received via serial
+01E2                       451     SERIAL_REC_ACTION PROC FAR
+01E2 51                    452             PUSH CX
+01E3 53                    453             PUSH BX
+01E4 50                    454             PUSH AX
+                           455     
+01E5 803E7D0001            456             CMP LCD_START, 01H
+01EA 7463                  457             JE LCD_RECEIVE_START
+                           458             
+01EC 803E7F0001            459             CMP START_READ, 01H
+01F1 7413                  460             JE START_READING_ID_VALUES
+                           461             
+01F3 3C5B                  462             CMP AL, '['
+01F5 7403                  463             JE START_READING_ID
+01F7 EB5390                464             JMP TERMINATE_COMMUNICATION
+                           465             
+01FA                       466     START_READING_ID:
+01FA FE067E00              467             INC LCD_FLAG
+01FE C6067F0001            468             MOV START_READ, 01H
+0203 EB4790                469             JMP TERMINATE_COMMUNICATION
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE   10
+
+
+LOC  OBJ                  LINE     SOURCE
+
+                           470             
+0206                       471     START_READING_ID_VALUES:
+0206 33DB                  472             XOR BX, BX
+0208 8A1E7E00              473             MOV BL, LCD_FLAG
+020C 4B                    474             DEC BX  
+020D 3A4777                475             CMP AL, LCD_ID[BX]
+0210 753A                  476             JNE TERMINATE_COMMUNICATION
+0212 803E7E0006            477             CMP LCD_FLAG, 06H
+0217 751D                  478             JNE NORMAL_ID_CHECK
+0219 C6067D0001            479             MOV LCD_START, 01H
+021E B02A                  480             MOV AL, '*'
+0220 9A0000----     E      481             CALL FAR PTR PRINT_CHAR
+0225 B031                  482             MOV AL, '1'
+0227 9A0000----     E      483             CALL FAR PTR PRINT_CHAR
+022C B02A                  484             MOV AL, '*'
+022E 9A0000----     E      485             CALL FAR PTR PRINT_CHAR
+0233 EB1790                486             JMP TERMINATE_COMMUNICATION
+                           487             
+0236                       488     NORMAL_ID_CHECK:
+0236 FE067E00              489             INC LCD_FLAG
+023A EB7F90                490             JMP END_SERIAL_COMMUNICATION
+                           491     
+023D                       492     INITIALIZE_TERMINATE_SERIAL:
+023D C6067D0000            493             MOV LCD_START, 00H
+0242 C6067E0000            494             MOV LCD_FLAG, 00H
+0247 C6067F0000            495             MOV START_READ, 00H
+                           496             
+024C                       497     TERMINATE_COMMUNICATION:
+024C E90101                498             JMP SERIAL_END
+                           499             
+024F                       500     LCD_RECEIVE_START:
+024F 803E760001            501             CMP LINE2_FLAG, 01H
+0254 7412                  502             JE RECEIVE_LINE2        
+                           503             
+0256 3C3E                  504             CMP AL, '>'
+0258 7449                  505             JE SWITCH_TO_LINE2      
+                           506             
+025A 803E750001            507             CMP RECEIVE_FLAG, 01H
+025F 7419                  508             JE RECEIVE_CHARACTER
+                           509             
+0261 3C3C                  510             CMP     AL,'<'
+0263 742C                  511             JE SET_RECEIVE_FLAG
+                           512             
+0265 E9E800                513             JMP SERIAL_END
+                           514             
+0268                       515     RECEIVE_LINE2:          
+0268 3C7D                  516             CMP AL, '}'
+026A 7476                  517             JE DISPLAY_ON_LCD
+                           518             
+026C 803E750001            519             CMP RECEIVE_FLAG, 01H
+0271 744B                  520             JE RECEIVE_CHARACTER_LINE2
+                           521             
+0273 3C7B                  522             CMP     AL,'{'
+0275 745E                  523             JE SET_RECEIVE_FLAG_LINE2               
+                           524             
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE   11
+
+
+LOC  OBJ                  LINE     SOURCE
+
+0277 E9D600                525             JMP SERIAL_END
+                           526             
+027A                       527     RECEIVE_CHARACTER:
+027A 803E700010            528             CMP LINE1_COUNT, LINE1_LIMIT
+027F 743A                  529             JE END_SERIAL_COMMUNICATION
+0281 33DB                  530             XOR BX, BX
+0283 8A1E7000              531             MOV BL, LINE1_COUNT
+0287 884730                532             MOV DISP_LINE1[BX], AL
+028A FE067000              533             INC LINE1_COUNT
+028E E9BF00                534             JMP SERIAL_END
+                           535             
+0291                       536     SET_RECEIVE_FLAG:
+0291 C606700000            537             MOV LINE1_COUNT, 00H
+0296 C606750001            538             MOV RECEIVE_FLAG, 01H
+029B 9A0000----     E      539             CALL FAR PTR DISABLE_TIMER2
+02A0 E9AD00                540             JMP SERIAL_END
+                           541             
+02A3                       542     SWITCH_TO_LINE2:
+02A3 803E750000            543             CMP RECEIVE_FLAG, 00H
+02A8 7411                  544             JE END_SERIAL_COMMUNICATION
+02AA 803E700000            545             CMP LINE1_COUNT, 00H
+02AF 74C9                  546             JE RECEIVE_CHARACTER            
+02B1 C606750000            547             MOV RECEIVE_FLAG, 00H
+02B6 C606760001            548             MOV LINE2_FLAG, 01H
+                           549             
+02BB                       550     END_SERIAL_COMMUNICATION:
+02BB E99200                551             JMP SERIAL_END  
+                           552             
+02BE                       553     RECEIVE_CHARACTER_LINE2:
+02BE 803E710028            554             CMP LINE2_COUNT, LINE2_LIMIT
+02C3 74F6                  555             JE END_SERIAL_COMMUNICATION
+02C5 33DB                  556             XOR BX, BX
+02C7 8A1E7100              557             MOV BL, LINE2_COUNT
+02CB 884740                558             MOV DISP_LINE2[BX], AL
+02CE FE067100              559             INC LINE2_COUNT
+02D2 EB7C90                560             JMP SERIAL_END
+                           561             
+02D5                       562     SET_RECEIVE_FLAG_LINE2:
+02D5 C606710000            563             MOV LINE2_COUNT, 00H
+02DA C606750001            564             MOV RECEIVE_FLAG, 01H
+02DF EB6F90                565             JMP SERIAL_END
+                           566             
+02E2                       567     DISPLAY_ON_LCD:
+02E2 803E710010            568             CMP LINE2_COUNT, LINE1_LIMIT
+02E7 7E26                  569             JLE NORMAL_DISPLAY_LCD
+02E9 33DB                  570             XOR BX, BX
+02EB 8A1E7100              571             MOV BL, LINE2_COUNT
+02EF C6474020              572             MOV DISP_LINE2[BX], ' '
+02F3 FE067100              573             INC LINE2_COUNT
+02F7 8A1E7100              574             MOV BL, LINE2_COUNT
+02FB C6474020              575             MOV DISP_LINE2[BX], ' '
+02FF FE067100              576             INC LINE2_COUNT
+0303 8A1E7100              577             MOV BL, LINE2_COUNT
+0307 C6474020              578             MOV DISP_LINE2[BX], ' '
+030B FE067100              579             INC LINE2_COUNT
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE   12
+
+
+LOC  OBJ                  LINE     SOURCE
+
+                           580             
+030F                       581     NORMAL_DISPLAY_LCD:
+030F 803E750000            582             CMP RECEIVE_FLAG, 00H
+0314 743A                  583             JE SERIAL_END
+0316 803E710000            584             CMP LINE2_COUNT, 00H
+031B 74A1                  585             JE RECEIVE_CHARACTER_LINE2      
+031D C606750000            586             MOV RECEIVE_FLAG, 00H
+0322 C606760000            587             MOV LINE2_FLAG, 00H     
+0327 C6067D0000            588             MOV LCD_START, 00H
+032C C6067E0000            589             MOV LCD_FLAG, 00H
+0331 C6067F0000            590             MOV START_READ, 00H
+0336 C606740000            591             MOV ROLL_COUNT, 00H
+033B C70672000000          592             MOV TIMER2_COUNT, 0000H
+0341 9A3300----     R      593             CALL FAR PTR LCD_INITIALIZE
+0346 9A0901----     R      594             CALL FAR PTR LCD_DISPLAY
+034B 9A0000----     E      595             CALL FAR PTR SET_TIMER2
+                           596             
+0350                       597     SERIAL_END:
+0350 58                    598             POP AX
+0351 5B                    599             POP     BX
+0352 59                    600             POP     CX
+0353 CB                    601             RET
+                           602     SERIAL_REC_ACTION ENDP
+                           603     
+                           604     
+                           605     ;Main Timer2 Procedure
+0354                       606     TIMER2_ACTION PROC FAR
+0354 50                    607             PUSH AX
+0355 53                    608             PUSH BX
+0356 51                    609             PUSH CX
+                           610                     
+0357 FF067200              611             INC TIMER2_COUNT
+035B 833E720064            612             CMP TIMER2_COUNT, TIMER2_LEN
+0360 7540                  613             JNE TIMER2_END          
+0362 C70672000000          614             MOV TIMER2_COUNT, 0000H 
+0368 FE067400              615             INC ROLL_COUNT
+036C 803E74000A            616             CMP ROLL_COUNT, ROLL_LIMIT
+0371 7C2F                  617             JL TIMER2_END
+0373 C606740010            618             MOV ROLL_COUNT, LINE1_LIMIT
+0378 803E710010            619             CMP LINE2_COUNT, LINE1_LIMIT
+037D 7E23                  620             JLE TIMER2_END
+                           621             
+037F 33DB                  622             XOR BX, BX
+0381 8A264000              623             MOV AH, DISP_LINE2[0]
+0385 8A0E7100              624             MOV CL, LINE2_COUNT
+0389 FEC9                  625             DEC CL
+                           626     
+038B                       627     SWITCH_ARRAY_ELEMENTS:
+038B 8A4741                628             MOV AL, DISP_LINE2[BX+1]
+038E 884740                629             MOV DISP_LINE2[BX], AL
+0391 43                    630             INC BX
+0392 E2F7                  631             LOOP SWITCH_ARRAY_ELEMENTS
+0394 33DB                  632             XOR BX, BX
+0396 8A1E7100              633             MOV BL, LINE2_COUNT
+039A 88673F                634             MOV DISP_LINE2[BX-1], AH        
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    10:14:30  11/29/;3  PAGE   13
+
+
+LOC  OBJ                  LINE     SOURCE
+
+                           635             
+039D 9A0901----     R      636             CALL FAR PTR LCD_DISPLAY
+                           637     
+03A2                       638     TIMER2_END:
+03A2 59                    639             POP CX
+03A3 5B                    640             POP BX
+03A4 58                    641             POP AX
+03A5 CB                    642             RET
+                           643     TIMER2_ACTION ENDP
+                           644     
+                           645     
+----                       646     CODE_SEG        ENDS
+                           647     END
+
+ASSEMBLY COMPLETE, NO ERRORS FOUND
