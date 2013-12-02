@@ -34,8 +34,8 @@ extrn   set_timer2:far
 	PCS3_ADDR EQU 180H ; Used for controlling the pattern that is displayed on the BCDs
 	PCS4_ADDR EQU 200H ; Used for controlling the DAC chip of the speaker system
 	
-	TIMER_COUNTER_BCD_LEN   EQU 20
-	TIMER_COUNTER_KBD_LEN   EQU 40
+	TIMER_COUNTER_BCD_LEN   EQU 24
+	TIMER_COUNTER_KBD_LEN   EQU 48
 	TIMEOUT_COUNTER_LEN		EQU 1540
 	
 	;Sound Mappings for playing on the speaker
@@ -1981,10 +1981,8 @@ EXECUTE_SOUND:
 	JMP T2_END
 
 EXECUTE_BCD:
-	CALL FAR PTR PLAY_SOUND
 	MOV DS:TIMER_COUNTER_BCD, 0
 	CALL FAR PTR DISPLAY_7SEGMENT
-	CALL FAR PTR PLAY_SOUND
 	JMP T2_END
 	
 EXECUTE_KBD:

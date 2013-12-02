@@ -1,4 +1,4 @@
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE    1
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE    1
 
 
 DOS 5.0 (038-N) 8086/87/88/186 MACRO ASSEMBLER V3.1 ASSEMBLY OF MODULE TIMER
@@ -45,8 +45,8 @@ LOC  OBJ                  LINE     SOURCE
                                    e BCDs
   0200                      35             PCS4_ADDR EQU 200H ; Used for controlling the DAC chip of the speaker system
                             36             
-  0014                      37             TIMER_COUNTER_BCD_LEN   EQU 20
-  0028                      38             TIMER_COUNTER_KBD_LEN   EQU 40
+  0018                      37             TIMER_COUNTER_BCD_LEN   EQU 24
+  0030                      38             TIMER_COUNTER_KBD_LEN   EQU 48
   0604                      39             TIMEOUT_COUNTER_LEN             EQU 1540
                             40             
                             41             ;Sound Mappings for playing on the speaker
@@ -58,7 +58,7 @@ LOC  OBJ                  LINE     SOURCE
   001D                      47             SOUND_THOUSAND                   EQU  29
   0023                      48             SOUND_GOOD                       EQU  35
   0025                      49             SOUND_AFTERNOON                  EQU  37
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE    2
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE    2
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -118,7 +118,7 @@ LOC  OBJ                  LINE     SOURCE
 0100                       100             TOS     LABEL   WORD
 ----                       101     STACK_SEG       ENDS
                            102     
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE    3
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE    3
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -178,7 +178,7 @@ LOC  OBJ                  LINE     SOURCE
      )
 005D (6                    120             USER_USERNAME        DB   6 DUP('0')
      30
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE    4
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE    4
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -238,7 +238,7 @@ LOC  OBJ                  LINE     SOURCE
 00BA C906
 00BC A613
 00BE 5F1C
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE    5
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE    5
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -298,7 +298,7 @@ LOC  OBJ                  LINE     SOURCE
 011E A013
 0120 921D                  138                                        DW   1D92H, 1C43H, 27A6H, 0324H, 031FH       
                                                          
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE    6
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE    6
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -358,7 +358,7 @@ LOC  OBJ                  LINE     SOURCE
 017E 0060
 0180 0060
 0182 0060
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE    7
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE    7
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -418,7 +418,7 @@ LOC  OBJ                  LINE     SOURCE
 01CF (10                   175             ITEM_PRICE            DB  10 DUP('0')
      30
      )
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE    8
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE    8
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -478,7 +478,7 @@ LOC  OBJ                  LINE     SOURCE
 0021 EF                    224             OUT  DX, AX
                            225     
                            226     ; PCSBA initial, set the parallel port start from 00H
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE    9
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE    9
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -538,7 +538,7 @@ LOC  OBJ                  LINE     SOURCE
                            277             
 0072 803EEE0108            278             CMP CASH_REGISTER_STATE, CHANGE_PAY
 0077 7458                  279             JE FIRST_JUMP_CHANGE_PAY
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   10
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   10
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -598,7 +598,7 @@ LOC  OBJ                  LINE     SOURCE
 00F6 750C                  332             JNE CONTINUE_TO_PASSWORD
 00F8 C606ED0101            333             MOV NETWORK_STATE, NETWORK_ENABLE
 00FD 9A1506----     R      334             CALL FAR PTR STATE_TRANSITION
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   11
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   11
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -658,7 +658,7 @@ LOC  OBJ                  LINE     SOURCE
 01A2 C606AB0101            387             MOV SAY_SOUND_ONCE_FLAG, 01H
 01A7 9A1506----     R      388             CALL FAR PTR STATE_TRANSITION
 01AC E98F03                389             JMP CASHIER_STATE_END
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   12
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   12
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -718,12 +718,12 @@ LOC  OBJ                  LINE     SOURCE
 024D                       442     BYPASS_ANDROID_END:
 024D C606ED0101            443             MOV NETWORK_STATE, NETWORK_ENABLE
 0252 C606500000            444             MOV KBD_CHAR_INPUT, KBD_CHAR_RESET
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   13
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   13
 
 
 LOC  OBJ                  LINE     SOURCE
 
-0257 9A8510----     R      445             CALL FAR PTR CLEAR_7SEGMENT
+0257 9A7B10----     R      445             CALL FAR PTR CLEAR_7SEGMENT
 025C E9DF02                446             JMP CASHIER_STATE_END
 025F                       447     QUANTITY_CHECK_NUMBER:  
 025F 803E740003            448             CMP USER_INPUT_LENGTH, KBD_QUANTITY_LENGTH
@@ -778,7 +778,7 @@ LOC  OBJ                  LINE     SOURCE
 0306 EB4B90                496             JMP BYPASS_VIEW_TOTAL
 0309                       497     PRICE_CANCEL_ITEM:
 0309 803E500044            498             CMP KBD_CHAR_INPUT, KBD_TRIGGER_CANCEL_ITEM
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   14
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   14
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -838,7 +838,7 @@ LOC  OBJ                  LINE     SOURCE
 03AD C606C20101            550             MOV TRIGGER_E_FLAG, 01H
 03B2 9A1506----     R      551             CALL FAR PTR STATE_TRANSITION   
 03B7 E98401                552             JMP CASHIER_STATE_END
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   15
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   15
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -898,7 +898,7 @@ LOC  OBJ                  LINE     SOURCE
 0449 7508                  605             JNE CHANGE_CANCEL_TRANSACTION
 044B 9A2A06----     R      606             CALL FAR PTR BACKSPACE_KEYPRESS
 0450 E9EB00                607             JMP CASHIER_STATE_END
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   16
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   16
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -958,7 +958,7 @@ LOC  OBJ                  LINE     SOURCE
 04FE C606EE0107            660             MOV CASH_REGISTER_STATE, END_TRANSACTION
 0503 C606C20101            661             MOV TRIGGER_E_FLAG, 01H
 0508 9A1506----     R      662             CALL FAR PTR STATE_TRANSITION
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   17
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   17
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1018,7 +1018,7 @@ LOC  OBJ                  LINE     SOURCE
 0587 7418                  713             JE MOV_AL_CHANGE
                            714             
 0589 884769                715             MOV USER_BARCODE[BX], AL
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   18
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   18
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1078,7 +1078,7 @@ LOC  OBJ                  LINE     SOURCE
 0601                       768     CLEAR_PRICES:
 0601 C6475330              769             MOV CHANGE_PRICE[BX], '0'
 0605 C687CF0130            770             MOV ITEM_PRICE[BX], '0'
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   19
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   19
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1099,7 +1099,7 @@ LOC  OBJ                  LINE     SOURCE
 0615 C606500000            784             MOV KBD_CHAR_INPUT, KBD_CHAR_RESET
 061A C606740000            785             MOV USER_INPUT_LENGTH, 00H
 061F C606510000            786             MOV KBD_INPUT_STATE, KBD_OLD_INPUT
-0624 9A8510----     R      787             CALL FAR PTR CLEAR_7SEGMENT
+0624 9A7B10----     R      787             CALL FAR PTR CLEAR_7SEGMENT
 0629 CB                    788             RET
                            789     STATE_TRANSITION ENDP
                            790     
@@ -1138,7 +1138,7 @@ LOC  OBJ                  LINE     SOURCE
                            822     ;Procedure that will display the price received via serial on the 7-segment display
 0665                       823     DISPLAY_PRICE_ON_BCD PROC FAR   
 0665 50                    824             PUSH AX
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   20
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   20
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1198,7 +1198,7 @@ LOC  OBJ                  LINE     SOURCE
 06B6 51                    876             PUSH CX
 06B7 53                    877             PUSH BX
 06B8 50                    878             PUSH AX
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   21
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   21
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1258,7 +1258,7 @@ LOC  OBJ                  LINE     SOURCE
 0702 E99700                926             JMP SKIP_SEND       
                            927     
 0705                       928     RESET_FLAG:
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   22
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   22
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1318,7 +1318,7 @@ LOC  OBJ                  LINE     SOURCE
                            978     
 0784                       979     SEND_NUMBER:
                            980             ;manipulating the number
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   23
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   23
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1378,7 +1378,7 @@ LOC  OBJ                  LINE     SOURCE
 07D5 51                   1032             PUSH CX
 07D6 52                   1033             PUSH DX
                           1034     
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   24
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   24
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1438,7 +1438,7 @@ LOC  OBJ                  LINE     SOURCE
 084D 9A0000----     E     1087             CALL FAR PTR PRINT_CHAR
 0852 B02A                 1088             MOV AL, '*'
 0854 9A0000----     E     1089             CALL FAR PTR PRINT_CHAR
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   25
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   25
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1498,7 +1498,7 @@ LOC  OBJ                  LINE     SOURCE
 08D8 803ECE0100           1142             CMP SERIAL_INDEX, 00H
 08DD 742A                 1143             JE GET_PLACE_VALUE
                           1144             
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   26
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   26
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1558,7 +1558,7 @@ LOC  OBJ                  LINE     SOURCE
                           1197             
 0959 E98E01               1198             JMP SERIAL_END
                           1199             
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   27
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   27
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1618,7 +1618,7 @@ LOC  OBJ                  LINE     SOURCE
 09D2 C606EE0104           1252             MOV CASH_REGISTER_STATE, ENTER_QUANTITY
 09D7 C606EB0101           1253             MOV CASH_REGISTER_START, 01H
 09DC C606C50100           1254             MOV SHOW_BCD_ONCE_FLAG, 00H
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   28
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   28
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1678,7 +1678,7 @@ LOC  OBJ                  LINE     SOURCE
 0A9C C606C20101           1306             MOV TRIGGER_E_FLAG, 01H
 0AA1                      1307     CONTINUE_SEND_ERROR:
 0AA1 C606CE0100           1308             MOV SERIAL_INDEX, 00H
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   29
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   29
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1738,7 +1738,7 @@ LOC  OBJ                  LINE     SOURCE
 0B18 B106                 1361             MOV CL, KBD_USERNAME_LENGTH     
 0B1A                      1362     SEND_USERNAME:
 0B1A 8A475D               1363             MOV AL, USER_USERNAME[BX]
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   30
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   30
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1798,7 +1798,7 @@ LOC  OBJ                  LINE     SOURCE
 0B9B 9A0000----     E     1416             CALL FAR PTR PRINT_CHAR
 0BA0 43                   1417             INC BX
 0BA1 E2F5                 1418             LOOP SEND_QUANTITY      
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   31
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   31
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1858,7 +1858,7 @@ LOC  OBJ                  LINE     SOURCE
 0C04                      1470     SOUND_INDEX_END:        
 0C04 59                   1471             POP     CX
 0C05 5B                   1472             POP     BX
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   32
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   32
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1918,7 +1918,7 @@ LOC  OBJ                  LINE     SOURCE
 0C74 9ADF0B----     R     1524             CALL FAR PTR ADD_SOUND_INDEX 
 0C79 C606DF0100           1525             MOV THOUSAND_FLAG, 00H
                           1526             
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   33
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   33
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -1978,7 +1978,7 @@ LOC  OBJ                  LINE     SOURCE
 0D08 9ADF0B----     R     1579             CALL FAR PTR ADD_SOUND_INDEX 
                           1580             
 0D0D                      1581     CONTINUE_WITH_REST_OF_5th_DIGIT:
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   34
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   34
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -2038,7 +2038,7 @@ LOC  OBJ                  LINE     SOURCE
 0D91 5B                   1634             POP     BX
 0D92 58                   1635             POP AX
 0D93 CB                   1636             RET
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   35
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   35
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -2098,7 +2098,7 @@ LOC  OBJ                  LINE     SOURCE
 0DDD 52                   1688             PUSH DX
                           1689     
 0DDE A0DA01               1690             MOV AL, TMP_PLACE_VALUE
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   36
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   36
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -2158,7 +2158,7 @@ LOC  OBJ                  LINE     SOURCE
 0E59                      1743     ADD_ZERO_INCOMING:
 0E59 8A16D901             1744             MOV DL, PLACE_VALUE
 0E5D 2AC2                 1745             SUB AL, DL
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   37
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   37
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -2218,7 +2218,7 @@ LOC  OBJ                  LINE     SOURCE
                           1798             
 0EE6                      1799     ADD_DECIMAL_POINT:
 0EE6 C687E0012E           1800             MOV TOTAL_PRICE[BX], '.'
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   38
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   38
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -2278,7 +2278,7 @@ LOC  OBJ                  LINE     SOURCE
 0F3E E9EA00               1852             JMP CALCULATE_CHANGE_END        
                           1853     
 0F41                      1854     START_SUBTRACTION:      
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   39
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   39
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -2338,7 +2338,7 @@ LOC  OBJ                  LINE     SOURCE
 0FB1 88A7E001             1907             MOV TOTAL_PRICE[BX], AH
 0FB5 EB2990               1908             JMP END_SUB_LOOP
                           1909             
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   40
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   40
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -2398,7 +2398,7 @@ LOC  OBJ                  LINE     SOURCE
 102D 5B                   1962             POP     BX
 102E 58                   1963             POP AX
 102F CB                   1964             RET
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   41
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   41
 
 
 LOC  OBJ                  LINE     SOURCE
@@ -2411,218 +2411,216 @@ LOC  OBJ                  LINE     SOURCE
 1030 FE06C601             1970             INC DS:TIMER_COUNTER_BCD
 1034 FF06C701             1971         INC DS:TIMER_COUNTER_KBD
                           1972     
-1038 833EC70128           1973         CMP DS:TIMER_COUNTER_KBD, TIMER_COUNTER_KBD_LEN
-103D 7426                 1974         JE EXECUTE_KBD
+1038 833EC70130           1973         CMP DS:TIMER_COUNTER_KBD, TIMER_COUNTER_KBD_LEN
+103D 741C                 1974         JE EXECUTE_KBD
                           1975             
-103F 803EC60114           1976         CMP DS:TIMER_COUNTER_BCD, TIMER_COUNTER_BCD_LEN
+103F 803EC60118           1976         CMP DS:TIMER_COUNTER_BCD, TIMER_COUNTER_BCD_LEN
 1044 7408                 1977         JE EXECUTE_BCD
                           1978             
 1046                      1979     EXECUTE_SOUND:
-1046 9A1C11----     R     1980             CALL FAR PTR PLAY_SOUND
-104B EB3790               1981             JMP T2_END
+1046 9A1211----     R     1980             CALL FAR PTR PLAY_SOUND
+104B EB2D90               1981             JMP T2_END
                           1982     
 104E                      1983     EXECUTE_BCD:
-104E 9A1C11----     R     1984             CALL FAR PTR PLAY_SOUND
-1053 C606C60100           1985             MOV DS:TIMER_COUNTER_BCD, 0
-1058 9AE610----     R     1986             CALL FAR PTR DISPLAY_7SEGMENT
-105D 9A1C11----     R     1987             CALL FAR PTR PLAY_SOUND
-1062 EB2090               1988             JMP T2_END
-                          1989             
-1065                      1990     EXECUTE_KBD:
-1065 9A1C11----     R     1991             CALL FAR PTR PLAY_SOUND
-106A 9A1C11----     R     1992             CALL FAR PTR PLAY_SOUND
-106F C706C7010000         1993             MOV DS:TIMER_COUNTER_KBD, 0
-1075 9AB506----     R     1994             CALL FAR PTR KEYPAD_READ
-107A 9A1C11----     R     1995             CALL FAR PTR PLAY_SOUND
-107F 9A1C11----     R     1996             CALL FAR PTR PLAY_SOUND
-                          1997             
-1084                      1998     T2_END:
-1084 CB                   1999             RET
-                          2000     TIMER2_ACTION   ENDP
-                          2001     
-                          2002     
-                          2003     ;Procedure that will reset the 7-segment displays back to zeroes
-1085                      2004     CLEAR_7SEGMENT PROC FAR
-1085 50                   2005             PUSH AX
-1086 53                   2006             PUSH BX
-1087 51                   2007             PUSH CX
-                          2008     
-1088 33DB                 2009             XOR BX, BX
-108A B90600               2010             MOV CX, 06
-                          2011             
-108D                      2012     CLEAR_SINGLE_BCD:
-108D 803EC10101           2013             CMP TRIGGER_L_FLAG, 01H
-1092 741B                 2014             JE ASSIGN_BCD_VALUE_TO_L
-                          2015             
-1094 803EC20101           2016             CMP TRIGGER_E_FLAG, 01H
-1099 741A                 2017             JE ASSIGN_BCD_VALUE_TO_E
-                          2018             
-109B 803EC30101           2019             CMP TRIGGER_A_FLAG, 01H
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   42
+104E C606C60100           1984             MOV DS:TIMER_COUNTER_BCD, 0
+1053 9ADC10----     R     1985             CALL FAR PTR DISPLAY_7SEGMENT
+1058 EB2090               1986             JMP T2_END
+                          1987             
+105B                      1988     EXECUTE_KBD:
+105B 9A1211----     R     1989             CALL FAR PTR PLAY_SOUND
+1060 9A1211----     R     1990             CALL FAR PTR PLAY_SOUND
+1065 C706C7010000         1991             MOV DS:TIMER_COUNTER_KBD, 0
+106B 9AB506----     R     1992             CALL FAR PTR KEYPAD_READ
+1070 9A1211----     R     1993             CALL FAR PTR PLAY_SOUND
+1075 9A1211----     R     1994             CALL FAR PTR PLAY_SOUND
+                          1995             
+107A                      1996     T2_END:
+107A CB                   1997             RET
+                          1998     TIMER2_ACTION   ENDP
+                          1999     
+                          2000     
+                          2001     ;Procedure that will reset the 7-segment displays back to zeroes
+107B                      2002     CLEAR_7SEGMENT PROC FAR
+107B 50                   2003             PUSH AX
+107C 53                   2004             PUSH BX
+107D 51                   2005             PUSH CX
+                          2006     
+107E 33DB                 2007             XOR BX, BX
+1080 B90600               2008             MOV CX, 06
+                          2009             
+1083                      2010     CLEAR_SINGLE_BCD:
+1083 803EC10101           2011             CMP TRIGGER_L_FLAG, 01H
+1088 741B                 2012             JE ASSIGN_BCD_VALUE_TO_L
+                          2013             
+108A 803EC20101           2014             CMP TRIGGER_E_FLAG, 01H
+108F 741A                 2015             JE ASSIGN_BCD_VALUE_TO_E
+                          2016             
+1091 803EC30101           2017             CMP TRIGGER_A_FLAG, 01H
+1096 7419                 2018             JE ASSIGN_BCD_VALUE_TO_A
+                          2019             
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   42
 
 
 LOC  OBJ                  LINE     SOURCE
 
-10A0 7419                 2020             JE ASSIGN_BCD_VALUE_TO_A
-                          2021             
-10A2 803EC40101           2022             CMP TRIGGER_P_FLAG, 01H
-10A7 7418                 2023             JE ASSIGN_BCD_VALUE_TO_P
-                          2024             
-10A9 A0AC01               2025             MOV AL, BCD_NUMBERS[0]
-10AC EB1990               2026             JMP ASSIGN_TO_BCD
-                          2027             
-10AF                      2028     ASSIGN_BCD_VALUE_TO_L:
-10AF A0B601               2029             MOV AL, BCD_NUMBERS[10]
-10B2 EB1390               2030             JMP ASSIGN_TO_BCD
-                          2031             
-10B5                      2032     ASSIGN_BCD_VALUE_TO_E:
-10B5 A0B701               2033             MOV AL, BCD_NUMBERS[11]
-10B8 EB0D90               2034             JMP ASSIGN_TO_BCD
-                          2035             
-10BB                      2036     ASSIGN_BCD_VALUE_TO_A:
-10BB A0B801               2037             MOV AL, BCD_NUMBERS[12]
-10BE EB0790               2038             JMP ASSIGN_TO_BCD
-                          2039             
-10C1                      2040     ASSIGN_BCD_VALUE_TO_P:
-10C1 A0B901               2041             MOV AL, BCD_NUMBERS[13] 
-10C4 EB0190               2042             JMP ASSIGN_TO_BCD
-                          2043             
-10C7                      2044     ASSIGN_TO_BCD:
-10C7 8887BA01             2045             MOV DS:BCD_DISPLAY[BX], AL
-10CB 43                   2046             INC BX
-10CC E2BF                 2047             LOOP CLEAR_SINGLE_BCD
-                          2048             
-10CE C606C10100           2049             MOV TRIGGER_L_FLAG, 00H
-10D3 C606C20100           2050             MOV TRIGGER_E_FLAG, 00H
-10D8 C606C30100           2051             MOV TRIGGER_A_FLAG, 00H
-10DD C606C40100           2052             MOV TRIGGER_P_FLAG, 00H
-                          2053     
-10E2 59                   2054             POP CX
-10E3 5B                   2055             POP BX
-10E4 58                   2056             POP AX
-10E5 CB                   2057             RET
-                          2058     CLEAR_7SEGMENT ENDP
-                          2059     
-                          2060     
-                          2061     ;Procedure that will display digits on the BCD based on the BCD queue
-10E6                      2062     DISPLAY_7SEGMENT PROC FAR       
-10E6 50                   2063             PUSH AX
-10E7 53                   2064             PUSH BX
-10E8 51                   2065             PUSH CX
-10E9 52                   2066             PUSH DX
-                          2067     
-10EA 33DB                 2068             XOR BX, BX
-                          2069             
-                          2070             ; BCD Select: [-] [-] [6] [5] [4] [3] [2] [1]
-10EC BA0001               2071             MOV DX, PCS2_ADDR
-10EF B0FE                 2072             MOV AL, 0FEH
-10F1 8A0EC001             2073             MOV CL, DS:CURRENT_BCD
-10F5 D2C0                 2074             ROL AL, CL
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   43
+1098 803EC40101           2020             CMP TRIGGER_P_FLAG, 01H
+109D 7418                 2021             JE ASSIGN_BCD_VALUE_TO_P
+                          2022             
+109F A0AC01               2023             MOV AL, BCD_NUMBERS[0]
+10A2 EB1990               2024             JMP ASSIGN_TO_BCD
+                          2025             
+10A5                      2026     ASSIGN_BCD_VALUE_TO_L:
+10A5 A0B601               2027             MOV AL, BCD_NUMBERS[10]
+10A8 EB1390               2028             JMP ASSIGN_TO_BCD
+                          2029             
+10AB                      2030     ASSIGN_BCD_VALUE_TO_E:
+10AB A0B701               2031             MOV AL, BCD_NUMBERS[11]
+10AE EB0D90               2032             JMP ASSIGN_TO_BCD
+                          2033             
+10B1                      2034     ASSIGN_BCD_VALUE_TO_A:
+10B1 A0B801               2035             MOV AL, BCD_NUMBERS[12]
+10B4 EB0790               2036             JMP ASSIGN_TO_BCD
+                          2037             
+10B7                      2038     ASSIGN_BCD_VALUE_TO_P:
+10B7 A0B901               2039             MOV AL, BCD_NUMBERS[13] 
+10BA EB0190               2040             JMP ASSIGN_TO_BCD
+                          2041             
+10BD                      2042     ASSIGN_TO_BCD:
+10BD 8887BA01             2043             MOV DS:BCD_DISPLAY[BX], AL
+10C1 43                   2044             INC BX
+10C2 E2BF                 2045             LOOP CLEAR_SINGLE_BCD
+                          2046             
+10C4 C606C10100           2047             MOV TRIGGER_L_FLAG, 00H
+10C9 C606C20100           2048             MOV TRIGGER_E_FLAG, 00H
+10CE C606C30100           2049             MOV TRIGGER_A_FLAG, 00H
+10D3 C606C40100           2050             MOV TRIGGER_P_FLAG, 00H
+                          2051     
+10D8 59                   2052             POP CX
+10D9 5B                   2053             POP BX
+10DA 58                   2054             POP AX
+10DB CB                   2055             RET
+                          2056     CLEAR_7SEGMENT ENDP
+                          2057     
+                          2058     
+                          2059     ;Procedure that will display digits on the BCD based on the BCD queue
+10DC                      2060     DISPLAY_7SEGMENT PROC FAR       
+10DC 50                   2061             PUSH AX
+10DD 53                   2062             PUSH BX
+10DE 51                   2063             PUSH CX
+10DF 52                   2064             PUSH DX
+                          2065     
+10E0 33DB                 2066             XOR BX, BX
+                          2067             
+                          2068             ; BCD Select: [-] [-] [6] [5] [4] [3] [2] [1]
+10E2 BA0001               2069             MOV DX, PCS2_ADDR
+10E5 B0FE                 2070             MOV AL, 0FEH
+10E7 8A0EC001             2071             MOV CL, DS:CURRENT_BCD
+10EB D2C0                 2072             ROL AL, CL
+10ED EE                   2073             OUT DX, AL
+                          2074             
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   43
 
 
 LOC  OBJ                  LINE     SOURCE
 
-10F7 EE                   2075             OUT DX, AL
-                          2076             
-10F8 BA8001               2077             MOV DX, PCS3_ADDR
-10FB 8A1EC001             2078             MOV BL, CURRENT_BCD
-10FF 8A87BA01             2079             MOV AL, BCD_DISPLAY[BX]
-1103 EE                   2080             OUT DX, AL
-                          2081             
-1104 FE06C001             2082             INC CURRENT_BCD
-1108 803EC00106           2083             CMP CURRENT_BCD, 06H
-110D 7403                 2084             JE RESET_CURRENT_BCD
-110F EB0690               2085             JMP DISP_END
-                          2086             
-1112                      2087     RESET_CURRENT_BCD:
-1112 C606C00100           2088             MOV CURRENT_BCD, 00H
-                          2089     
-1117                      2090     DISP_END:       
-1117 5A                   2091             POP DX
-1118 59                   2092             POP     CX
-1119 5B                   2093             POP     BX
-111A 58                   2094             POP AX
-111B CB                   2095             RET
-                          2096     DISPLAY_7SEGMENT ENDP
-                          2097     
-                          2098     
-                          2099     ;Procedure that will play sounds on the speaker based on the speaker queue
-111C                      2100     PLAY_SOUND PROC FAR     
-111C 50                   2101             PUSH AX
-111D 53                   2102             PUSH BX
-111E 56                   2103             PUSH SI
-111F 52                   2104             PUSH DX
-                          2105             
-1120 B8----         R     2106             MOV AX, DATA_SEG
-1123 8ED8                 2107         MOV DS, AX
-                          2108             
-1125 A0A801               2109             MOV AL, SOUND_HEAD
-1128 3806A901             2110             CMP SOUND_TAIL, AL
-112C 7470                 2111             JE SOUND_END
-                          2112             
-112E 33DB                 2113             XOR BX, BX
-1130 8A1EA801             2114             MOV BL, SOUND_HEAD 
-1134 8A9F8801             2115             MOV BL, SOUND_QUEUE[BX]
-1138 8B87D000             2116             MOV AX, SOUND_SIZE[BX]
-                          2117             
-113C 833E860100           2118             CMP SOUND_COUNT, 0000H
-1141 7438                 2119             JE ASSIGN_ADDRESS
-1143 39068601             2120             CMP SOUND_COUNT, AX
-1147 7E38                 2121             JLE SOUND_PLAY
-                          2122             
-1149 FE06A801             2123             INC SOUND_HEAD
-114D 803EA80120           2124             CMP SOUND_HEAD, 32
-1152 7C05                 2125             JL SOUND_INITIALIZE_CONTINUE
-1154 C606A80100           2126             MOV SOUND_HEAD, 00H
-                          2127     
-1159                      2128     SOUND_INITIALIZE_CONTINUE:
-1159 C70686010000         2129             MOV SOUND_COUNT, 0000H
-8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    21:30:48  11/30/;3  PAGE   44
+10EE BA8001               2075             MOV DX, PCS3_ADDR
+10F1 8A1EC001             2076             MOV BL, CURRENT_BCD
+10F5 8A87BA01             2077             MOV AL, BCD_DISPLAY[BX]
+10F9 EE                   2078             OUT DX, AL
+                          2079             
+10FA FE06C001             2080             INC CURRENT_BCD
+10FE 803EC00106           2081             CMP CURRENT_BCD, 06H
+1103 7403                 2082             JE RESET_CURRENT_BCD
+1105 EB0690               2083             JMP DISP_END
+                          2084             
+1108                      2085     RESET_CURRENT_BCD:
+1108 C606C00100           2086             MOV CURRENT_BCD, 00H
+                          2087     
+110D                      2088     DISP_END:       
+110D 5A                   2089             POP DX
+110E 59                   2090             POP     CX
+110F 5B                   2091             POP     BX
+1110 58                   2092             POP AX
+1111 CB                   2093             RET
+                          2094     DISPLAY_7SEGMENT ENDP
+                          2095     
+                          2096     
+                          2097     ;Procedure that will play sounds on the speaker based on the speaker queue
+1112                      2098     PLAY_SOUND PROC FAR     
+1112 50                   2099             PUSH AX
+1113 53                   2100             PUSH BX
+1114 56                   2101             PUSH SI
+1115 52                   2102             PUSH DX
+                          2103             
+1116 B8----         R     2104             MOV AX, DATA_SEG
+1119 8ED8                 2105         MOV DS, AX
+                          2106             
+111B A0A801               2107             MOV AL, SOUND_HEAD
+111E 3806A901             2108             CMP SOUND_TAIL, AL
+1122 7470                 2109             JE SOUND_END
+                          2110             
+1124 33DB                 2111             XOR BX, BX
+1126 8A1EA801             2112             MOV BL, SOUND_HEAD 
+112A 8A9F8801             2113             MOV BL, SOUND_QUEUE[BX]
+112E 8B87D000             2114             MOV AX, SOUND_SIZE[BX]
+                          2115             
+1132 833E860100           2116             CMP SOUND_COUNT, 0000H
+1137 7438                 2117             JE ASSIGN_ADDRESS
+1139 39068601             2118             CMP SOUND_COUNT, AX
+113D 7E38                 2119             JLE SOUND_PLAY
+                          2120             
+113F FE06A801             2121             INC SOUND_HEAD
+1143 803EA80120           2122             CMP SOUND_HEAD, 32
+1148 7C05                 2123             JL SOUND_INITIALIZE_CONTINUE
+114A C606A80100           2124             MOV SOUND_HEAD, 00H
+                          2125     
+114F                      2126     SOUND_INITIALIZE_CONTINUE:
+114F C70686010000         2127             MOV SOUND_COUNT, 0000H
+1155 A0A801               2128             MOV AL, SOUND_HEAD
+1158 3806A901             2129             CMP SOUND_TAIL, AL
+8086/87/88/186 MACRO ASSEMBLER    TIMER                                                    14:14:47  12/02/;3  PAGE   44
 
 
 LOC  OBJ                  LINE     SOURCE
 
-115F A0A801               2130             MOV AL, SOUND_HEAD
-1162 3806A901             2131             CMP SOUND_TAIL, AL
-1166 7436                 2132             JE SOUND_END
-                          2133             
-1168 33DB                 2134             XOR BX, BX
-116A 8A1EA801             2135             MOV BL, SOUND_HEAD
-116E 8A9F8801             2136             MOV BL, SOUND_QUEUE[BX]
-1172 8B4776               2137             MOV AX, SOUND_OFFSET[BX]
-1175 A38401               2138             MOV SOUND_ADDRESS, AX
-1178 EB0790               2139             JMP SOUND_PLAY
-                          2140             
-117B                      2141     ASSIGN_ADDRESS:
-117B 8B4776               2142             MOV AX, SOUND_OFFSET[BX]
-117E A38401               2143             MOV SOUND_ADDRESS, AX
-                          2144             
-1181                      2145     SOUND_PLAY:                             
-1181 8B368401             2146             MOV SI, SOUND_ADDRESS
-1185 8B872A01             2147             MOV AX, EEPROM_START[BX]
-1189 8ED8                 2148             MOV DS, AX
-                          2149             
-118B 8A04                 2150             MOV AL, [SI]
-118D BA0002               2151             MOV DX, PCS4_ADDR
-1190 EE                   2152             OUT DX, AL
-                          2153                     
-1191 B8----         R     2154             MOV AX, DATA_SEG
-1194 8ED8                 2155         MOV DS, AX
-                          2156             
-1196 FF068601             2157             INC SOUND_COUNT
-119A FF068401             2158             INC SOUND_ADDRESS
-                          2159     
-119E                      2160     SOUND_END:      
-119E 5A                   2161             POP DX
-119F 5E                   2162             POP     SI
-11A0 5B                   2163             POP     BX
-11A1 58                   2164             POP AX
-11A2 CB                   2165             RET
-                          2166     PLAY_SOUND ENDP
-                          2167     
-                          2168     
-----                      2169     CODE_SEG        ENDS
-                          2170     END
+115C 7436                 2130             JE SOUND_END
+                          2131             
+115E 33DB                 2132             XOR BX, BX
+1160 8A1EA801             2133             MOV BL, SOUND_HEAD
+1164 8A9F8801             2134             MOV BL, SOUND_QUEUE[BX]
+1168 8B4776               2135             MOV AX, SOUND_OFFSET[BX]
+116B A38401               2136             MOV SOUND_ADDRESS, AX
+116E EB0790               2137             JMP SOUND_PLAY
+                          2138             
+1171                      2139     ASSIGN_ADDRESS:
+1171 8B4776               2140             MOV AX, SOUND_OFFSET[BX]
+1174 A38401               2141             MOV SOUND_ADDRESS, AX
+                          2142             
+1177                      2143     SOUND_PLAY:                             
+1177 8B368401             2144             MOV SI, SOUND_ADDRESS
+117B 8B872A01             2145             MOV AX, EEPROM_START[BX]
+117F 8ED8                 2146             MOV DS, AX
+                          2147             
+1181 8A04                 2148             MOV AL, [SI]
+1183 BA0002               2149             MOV DX, PCS4_ADDR
+1186 EE                   2150             OUT DX, AL
+                          2151                     
+1187 B8----         R     2152             MOV AX, DATA_SEG
+118A 8ED8                 2153         MOV DS, AX
+                          2154             
+118C FF068601             2155             INC SOUND_COUNT
+1190 FF068401             2156             INC SOUND_ADDRESS
+                          2157     
+1194                      2158     SOUND_END:      
+1194 5A                   2159             POP DX
+1195 5E                   2160             POP     SI
+1196 5B                   2161             POP     BX
+1197 58                   2162             POP AX
+1198 CB                   2163             RET
+                          2164     PLAY_SOUND ENDP
+                          2165     
+                          2166     
+----                      2167     CODE_SEG        ENDS
+                          2168     END
 
 ASSEMBLY COMPLETE, NO ERRORS FOUND
