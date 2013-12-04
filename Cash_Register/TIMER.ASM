@@ -14,7 +14,7 @@ public	serial_rec_action, timer2_action
 extrn	print_char:far, print_2hex:far, iodefine:far
 extrn   set_timer2:far
 
-;IO Setup for 80C188 
+;IO Setup for 80C188
 	UMCR    EQU    0FFA0H ; Upper Memory Control Register
 	LMCR    EQU    0FFA2H ; Lower Memory control Register         
 	PCSBA   EQU    0FFA4H ; Peripheral Chip Select Base Address
@@ -539,7 +539,7 @@ TRANSFER_TO_ITEM_PRICE:
 	ADD AL, 48
 	MOV PLACE_VALUE, AL
 	MOV TMP_PLACE_VALUE, AL
-	SUB AL, 45
+	SUB AL, 43
 	MOV SERIAL_INDEX, AL
 	CALL FAR PTR DISPLAY_PRICE_ON_BCD
 	CALL FAR PTR POPULATE_SOUND_QUEUE
@@ -1239,7 +1239,9 @@ TOTAL_INPUT_PRICE_SWAP:
 	INC BX
 	LOOP TOTAL_INPUT_PRICE_SWAP	
 	MOV AH, TOTAL_PLACE_VALUE
-	ADD AH, 48
+	ADD AH, 5
+	MOV SERIAL_INDEX, AH
+	ADD AH, 43
 	MOV PLACE_VALUE, AH
 	MOV TMP_PLACE_VALUE, AH	
 	DEC PURCHASE_ITEM_COUNT
@@ -1483,7 +1485,7 @@ POPULATE_SOUND_QUEUE PROC FAR
 	
 	SUB	PLACE_VALUE, 48
 	MOV CL, SERIAL_INDEX
-	SUB CX, 2
+	SUB CL, 2
 	MOV SERIAL_INDEX, CL	
 	
 LOAD_SOUND_QUEUE:
